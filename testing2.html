@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stacking Case Studies • Top-tier Portfolio</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root{
+      --bg: #0b0c10;
+      --bg2: #0e1117;
+      --text: #e8ecf1;
+      --muted: #a7b0be;
+      --card: #121620;
+      --brand-1: #ff6b35;
+      --brand-2: #ff914d;
+      --ring: rgba(255,255,255,.12);
+      --shadow: 0 10px 30px rgba(0,0,0,.45), 0 2px 10px rgba(0,0,0,.35);
+      --maxw: 1200px;
+      --radius-2xl: 24px;
+      --radius-xl: 18px;
+
+      /* JS will compute exact tail */
+      --stack-tail: 4vh;
+
+      /* Modal theme */
+      --modal-blur: 14px;
+      --modal-bg: rgba(18,22,30,.82);
+      --modal-border-1: rgba(255,255,255,.18);
+      --modal-border-2: rgba(255,255,255,.06);
+      --modal-shadow: 0 30px 100px rgba(0,0,0,.6), 0 10px 30px rgba(0,0,0,.45);
+    }
+
+    * { box-sizing: border-box }
+    body{
+      margin:0; color:var(--text);
+      font-family:'Outfit',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Helvetica Neue',Arial,sans-serif;
+      background:
+        radial-gradient(1000px 520px at 10% -10%, rgba(255,145,77,.12), transparent 60%),
+        radial-gradient(900px 600px at 100% 0%, rgba(255,107,53,.10), transparent 60%),
+        var(--bg);
+      line-height:1.55;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    a{ color:inherit; text-decoration:none }
+    img{ max-width:100%; display:block; border-radius:14px }
+    .container{ width:min(92vw,var(--maxw)); margin:0 auto }
+
+    /* Buttons */
+    .btn{
+      --bg: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+      display:inline-flex; align-items:center; gap:.6rem;
+      padding:.9rem 1.15rem; border-radius:999px; border:0; cursor:pointer;
+      background:var(--bg); color:#12131a; font-weight:800; letter-spacing:.2px;
+      box-shadow:0 12px 30px rgba(255,107,53,.24), inset 0 1px 0 rgba(255,255,255,.25);
+      transition:transform .2s cubic-bezier(.2,.7,.2,1), filter .2s ease, box-shadow .2s ease;
+      will-change: transform, filter;
+    }
+    .btn:hover{ transform:translateY(-1px); filter:brightness(1.05) }
+    .btn.secondary{
+      --bg: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+      color:var(--text); border:1px solid rgba(255,255,255,.1); box-shadow:none;
+    }
+
+    /* Hero */
+    #hero{ padding: clamp(80px, 10vh, 120px) 0 40px }
+    .hero-wrap{ display:grid; grid-template-columns:1.25fr 1fr; gap:clamp(24px,6vw,60px); align-items:center }
+    .hero-card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-2xl);
+      padding: clamp(24px, 4vw, 40px); box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .eyebrow{ display:inline-flex; gap:.5rem; align-items:center; padding:.4rem .75rem; border-radius:999px; border:1px solid rgba(255,145,77,.3); background:rgba(255,145,77,.14); color:#ffd8c4; font-weight:700; margin-bottom:12px }
+    .hero-title{ font-size: clamp(34px, 5.6vw, 64px); line-height:1.05; letter-spacing:-.02em; margin:8px 0 12px }
+    .hero-sub{ color:var(--muted); font-size: clamp(16px, 2.1vw, 19px); max-width:60ch; margin:0 0 22px }
+    .cta-row{ display:flex; gap:12px; flex-wrap:wrap }
+    .hero-visual{
+      min-height: 360px; border-radius:var(--radius-2xl);
+      background: linear-gradient(180deg, #131722, var(--bg2)); border:1px solid rgba(255,255,255,.08);
+      box-shadow:var(--shadow); position:relative; overflow:hidden;
+    }
+    .hero-visual::after{
+      content:""; position:absolute; inset:0;
+      background:
+        linear-gradient(transparent 49%, rgba(255,255,255,.06) 50%, transparent 51%) 0 0 / 100% 48px,
+        linear-gradient(90deg, transparent 49%, rgba(255,255,255,.06) 50%, transparent 51%) 0 0 / 48px 100%;
+      opacity:.35; animation:gridPulse 7s ease-in-out infinite;
+    }
+    @keyframes gridPulse{ 0%,100%{opacity:.28} 50%{opacity:.44} }
+
+    /* Section heads */
+    .section-head{ display:flex; justify-content:space-between; align-items:end; gap:16px; margin:0 0 20px }
+    .section-head h2{ font-size:clamp(24px,3.6vw,36px); letter-spacing:-.01em; margin:0 }
+    .section-sub{ color:var(--muted); max-width:60ch }
+
+    /* =========================
+       CASE STUDIES — CSS STICKY STACK
+       ========================= */
+    #case-studies{ padding: 80px 0 40px }
+    .stack{
+      --sticky-top: clamp(64px, 12vh, 110px);
+      --card-gap: clamp(160px, 34vh, 420px);
+      --count: 3; /* JS will update */
+      position: relative;
+      padding-bottom: calc((var(--count) - 1) * var(--card-gap) + var(--stack-tail));
+    }
+    .stack-card{
+      position: sticky;
+      top: var(--sticky-top);
+      margin-top: calc(var(--i) * var(--card-gap));
+      z-index: calc(10 + var(--i));
+      border-radius: var(--radius-2xl);
+      border:1px solid rgba(255,255,255,.08);
+      background: linear-gradient(120deg, color-mix(in oklab, var(--tint, #ff914d) 12%, #11131a), #10131a);
+      box-shadow: 0 25px 60px rgba(0,0,0,.55);
+      overflow: clip;
+      display:grid; grid-template-columns: 1fr 1.05fr; gap:24px;
+      padding: clamp(16px, 2.2vw, 24px);
+      min-height: clamp(520px, 72vh, 760px);
+      transform: translateY(26px) scale(.985);
+      opacity: 0;
+      transition:
+        transform .6s cubic-bezier(.2,.7,.2,1),
+        opacity .6s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+      will-change: transform, opacity;
+    }
+    .stack-card.in{ transform: translateY(0) scale(1); opacity: 1 }
+    .stack-card:hover{ border-color: rgba(255,255,255,.14); box-shadow: 0 30px 80px rgba(0,0,0,.58) }
+
+    .cs-info{ display:flex; flex-direction:column; gap:12px; align-self:center }
+    .tagline{ display:flex; flex-wrap:wrap; gap:8px }
+    .tag{ padding:.35rem .6rem; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08); font-weight:700; letter-spacing:.2px; font-size:.84rem }
+    .cs-title{ font-size: clamp(20px, 2.6vw, 28px); margin: 4px 0 2px }
+    .cs-desc{ color: var(--muted) }
+    .cs-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:4px }
+
+    .cs-media{
+      align-self:center; background:linear-gradient(180deg, #151823, #0f1218);
+      border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-xl);
+      padding: clamp(12px, 1.6vw, 18px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
+      display:flex; justify-content:center; align-items:center; overflow:hidden;
+    }
+    .mock{
+      width:100%; aspect-ratio: 16/10; border-radius:14px; position:relative; overflow:hidden;
+      background: linear-gradient(180deg, #0f131b, #0a0d12);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .mock::before{
+      content:""; position:absolute; inset:0; mix-blend-mode:screen; opacity:.65;
+      background:
+        conic-gradient(from 140deg at 60% 10%, rgba(255,145,77,.35), transparent 50%),
+        radial-gradient(540px 240px at 20% 0%, rgba(255,255,255,.06), transparent 60%);
+    }
+
+    /* Portfolio */
+    #portfolio{ padding:80px 0 }
+    .grid{ display:grid; grid-template-columns: repeat(12,1fr); gap:18px }
+    .card{
+      grid-column: span 4;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.025));
+      border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-xl);
+      padding:16px; box-shadow:var(--shadow);
+      transition:transform .18s ease, border-color .2s ease;
+    }
+    .card:hover{ transform:translateY(-4px); border-color:rgba(255,255,255,.14) }
+    .card h3{ margin:12px 10px 6px; font-size:1.1rem }
+    .card p{ margin:0 10px 14px; color:var(--muted) }
+    .chip-row{ display:flex; flex-wrap:wrap; gap:8px; margin:0 10px 10px }
+    .chip{ padding:.35rem .6rem; border-radius:999px; font-weight:700; font-size:.82rem; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08) }
+
+    /* Footer */
+    footer{ padding:40px 0 70px; border-top:1px solid rgba(255,255,255,.08); background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)) }
+    .foot-row{ display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap }
+    .pill{ padding:.6rem .9rem; border-radius:999px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.04); font-weight:700; transition:transform .15s ease, border-color .2s ease }
+    .pill:hover{ transform:translateY(-2px); border-color:rgba(255,255,255,.2) }
+
+    /* ====== Responsive tweaks ====== */
+    @media (min-width: 1280px){
+      .stack{ --card-gap: clamp(140px, 28vh, 360px); }
+    }
+    @media (min-width: 1600px){
+      .stack{ --card-gap: clamp(120px, 24vh, 320px); }
+    }
+    @media (max-width: 980px){
+      .hero-wrap{ grid-template-columns:1fr }
+      .stack-card{ grid-template-columns:1fr; min-height: clamp(520px, 72vh, 880px) }
+      .cs-media{ order:-1 }
+      .grid{ grid-template-columns: repeat(6,1fr) }
+      .card{ grid-column: span 6 }
+    }
+    /* Disable stacking + animations on smaller screens */
+    @media (max-width: 768px){
+      .stack{ --sticky-top: 0; --card-gap: 20px; padding-bottom: 0; }
+      .stack-card{ position: static; top: auto; margin-top: 16px; transform: none; opacity: 1; transition: none; }
+    }
+
+    /* ===== Modal: SMALL, CENTERED, UNSCROLLABLE ===== */
+    .modal{
+      position:fixed; inset:0;
+      display:grid; place-items:center;
+      background: rgba(8,10,14,.55);
+      -webkit-backdrop-filter: blur(var(--modal-blur));
+      backdrop-filter: blur(var(--modal-blur));
+      opacity:0; pointer-events:none; transition:opacity .22s ease;
+      padding:24px; z-index:9999;
+    }
+    .modal.open{ opacity:1; pointer-events:auto }
+
+    .modal-card{
+      width:min(560px, 92vw);
+      /* Smaller, unscrollable card */
+      max-height:none; height:auto; overflow:visible;
+      border-radius:22px;
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03)), var(--modal-bg);
+      box-shadow: var(--modal-shadow);
+      position:relative;
+      padding:20px 20px 16px 20px;
+      transform: translateY(10px) scale(.985);
+      opacity:0;
+      transition: transform .22s cubic-bezier(.18,.84,.26,1), opacity .18s ease;
+      border:1px solid var(--modal-border-2);
+    }
+    .modal-card::before{
+      content:""; position:absolute; inset:0; border-radius:inherit; padding:1px;
+      background: linear-gradient(180deg, var(--modal-border-1), var(--modal-border-2));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
+      pointer-events:none;
+    }
+    .modal.open .modal-card{ transform: none; opacity: 1; }
+
+    .modal-header{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin-bottom:8px;
+    }
+    .modal-title{
+      display:flex; align-items:center; gap:10px; margin:0; letter-spacing:-.01em;
+      font-size: clamp(18px, 2vw, 22px);
+    }
+    .icon-dot{
+      width:9px; height:9px; border-radius:50%;
+      background: radial-gradient(circle at 40% 40%, #fff, #ffd3c2 35%, #ff9b62 60%, #ff6b35 100%);
+      box-shadow: 0 0 12px rgba(255,145,77,.55);
+      flex: 0 0 auto;
+    }
+    .modal-tags{ display:flex; gap:8px; flex-wrap:wrap; margin:4px 0 10px }
+    .modal-tag{ padding:.3rem .55rem; border-radius:999px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.08); font-weight:700; font-size:.78rem }
+
+    .modal-hero{
+      border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,.08);
+      margin:8px 0 10px; background:#0e1117;
+    }
+    .modal-content{ color:var(--muted); font-size: .98rem }
+    .modal-content p{ margin: 0 }
+
+    /* No internal scrollbar at all */
+    .modal-card, .modal-card * { scrollbar-width: none; }
+    .modal-card::-webkit-scrollbar{ display:none }
+
+    @media (max-width: 420px){
+      .modal-card{ width: 94vw; border-radius:18px; padding:16px }
+      .modal-title{ font-size: 18px }
+    }
+  </style>
+</head>
+<body>
+  <!-- HERO -->
+  <section id="hero">
+    <div class="container hero-wrap">
+      <div class="hero-card">
+        <span class="eyebrow">Conversion-first websites</span>
+        <h1 class="hero-title">Stacking case studies that sell your work.</h1>
+        <p class="hero-sub">Cards slide up and stack on top (CSS sticky, buttery-smooth), with on-page “View full” modals so visitors never lose their place.</p>
+        <div class="cta-row">
+          <button class="btn" id="cta-explore">Explore case studies</button>
+          <button class="btn secondary" id="cta-portfolio">View portfolio</button>
+        </div>
+      </div>
+      <div class="hero-visual"></div>
+    </div>
+  </section>
+
+  <!-- CASE STUDIES (STACK) -->
+  <section id="case-studies">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>Case Studies</h2>
+          <div class="section-sub">Slide-in stacking using CSS <em>position: sticky</em>. “View full” opens a modal and keeps you on the page.</div>
+        </div>
+      </div>
+
+      <div class="stack" id="stack" aria-label="Case study stack">
+        <!-- cards injected dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section id="portfolio">
+    <div class="container">
+      <div class="section-head">
+        <h2>Portfolio</h2>
+        <div class="section-sub">Selected projects with crisp previews and quick tech tags.</div>
+      </div>
+      <div class="grid" id="portfolioGrid"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="foot-row">
+        <div>© <span id="yr"></span> Your Name — All rights reserved.</div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap">
+          <a class="pill" href="#" aria-label="Twitter">Twitter</a>
+          <a class="pill" href="#" aria-label="LinkedIn">LinkedIn</a>
+          <a class="pill" href="#" aria-label="GitHub">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL (small & unscrollable) -->
+  <div class="modal" id="modal" role="dialog" aria-hidden="true" aria-modal="true">
+    <div class="modal-card" role="document">
+      <div class="modal-header">
+        <h3 class="modal-title"><span class="icon-dot" aria-hidden="true"></span><span id="dialogTitle">Title</span></h3>
+        <button class="btn secondary" id="closeModal" aria-label="Close">Close</button>
+      </div>
+      <div class="modal-tags" id="dialogTags"></div>
+      <div class="modal-hero"><div class="mock" style="aspect-ratio:16/9;"></div></div>
+      <div class="modal-content" id="dialogDesc"></div>
+    </div>
+  </div>
+
+  <script>
+    // ===== Data =====
+    const caseStudies = [
+      {
+        id: "cs-1",
+        title: "Fintech Checkout — +38% Conversion",
+        tags: ["Fintech", "CRO", "A/B"],
+        excerpt: "Rebuilt the checkout funnel with trust cues, progressive validation.",
+        content: `Three A/B sprints across 6 weeks:
+- Validation jank removed, smoother KYC states
+- Microcopy clarifies pending checks
+- Trust markers + social proof
+Result: +38% conversion, -22% bounce.`,
+        hue: 18
+      },
+      {
+        id: "cs-2",
+        title: "SaaS Onboarding — TTV in 90s",
+        tags: ["SaaS", "Onboarding", "UX Writing"],
+        excerpt: "Sample data + checklist enable value before setup; retention up.",
+        content: `Replaced empty states with seeded data + task list.
+Users explored features immediately; D7 retention +14.6%.`,
+        hue: 28
+      },
+      {
+        id: "cs-3",
+        title: "D2C Landing — ROAS 3.1×",
+        tags: ["D2C", "Landing Page", "Copy"],
+        excerpt: "Outcome-driven headline, UGC above the fold, clarified guarantee.",
+        content: `Conversion story layout, timed review reel, risk reversal.
+Higher AOV and ROAS 3.1× over baseline.`,
+        hue: 12
+      }
+    ];
+
+    const portfolio = [
+      { id:"p1", title:"Analytics Microsite", blurb:"Animated data stories.", tags:["GSAP","HTML","CSS"] },
+      { id:"p2", title:"Brand Landing", blurb:"Hero narrative + CTA focus.", tags:["UX","Copy","Web"] },
+      { id:"p3", title:"Checkout Revamp", blurb:"Frictionless purchase flow.", tags:["CRO","Forms","A11y"] },
+      { id:"p4", title:"Docs Portal", blurb:"Readable, fast, searchable docs.", tags:["Search","SPA","Perf"] },
+      { id:"p5", title:"Demo Gallery", blurb:"Interactive components.", tags:["UI","Components","DX"] },
+      { id:"p6", title:"Workshop Hub", blurb:"Course landing + calendar.", tags:["Calendly","SSR","SEO"] }
+    ];
+
+    // ===== Helpers =====
+    const $ = (s, c=document)=>c.querySelector(s);
+    const $$ = (s, c=document)=>Array.from(c.querySelectorAll(s));
+    const stack = $('#stack');
+    const modal = $('#modal');
+    const modalCard = $('.modal-card', modal);
+    const closeModalBtn = $('#closeModal');
+    const modalTitleEl = $('#dialogTitle');
+    const modalTagsEl = $('#dialogTags');
+    const modalBody = $('#dialogDesc');
+
+    // ===== Renderers =====
+    function renderStack(){
+      stack.innerHTML = '';
+      stack.style.setProperty('--count', caseStudies.length);
+      caseStudies.forEach((item, i) => {
+        const card = document.createElement('article');
+        card.className = 'stack-card';
+        card.style.setProperty('--i', i);
+        card.style.setProperty('--tint', `oklch(0.78 0.16 ${item.hue})`);
+        card.dataset.csid = item.id;
+
+        card.innerHTML = `
+          <div class="cs-info">
+            <div class="tagline">${item.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+            <h3 class="cs-title">${item.title}</h3>
+            <p class="cs-desc">${item.excerpt}</p>
+            <div class="cs-actions">
+              <button class="btn view-btn" data-view="${item.id}">View full</button>
+              <button class="btn secondary" data-next>Next</button>
+            </div>
+          </div>
+          <div class="cs-media">
+            <div class="mock" aria-label="${item.title} visual"></div>
+          </div>
+        `;
+        stack.appendChild(card);
+      });
+    }
+
+    function renderPortfolio(){
+      const grid = $('#portfolioGrid');
+      grid.innerHTML = '';
+      portfolio.forEach((p) => {
+        const el = document.createElement('article');
+        el.className = 'card';
+        el.innerHTML = `
+          <div class="thumb"><div class="mock" style="aspect-ratio:16/9;"></div></div>
+          <h3>${p.title}</h3>
+          <p>${p.blurb}</p>
+          <div class="chip-row">${p.tags.map(t=>`<span class="chip">${t}</span>`).join('')}</div>
+          <div style="display:flex; gap:10px; margin:6px 10px 4px;">
+            <button class="btn" data-action="view">Preview</button>
+            <button class="btn secondary" data-action="details">Details</button>
+          </div>
+        `;
+        grid.appendChild(el);
+      });
+    }
+
+    // ===== Utilities: resolve CSS var to px =====
+    function resolveVarPx(varName, hostEl){
+      const probe = document.createElement('div');
+      probe.style.position = 'fixed';
+      probe.style.top = `var(${varName})`;
+      probe.style.left = '0';
+      probe.style.visibility = 'hidden';
+      (hostEl || document.body).appendChild(probe);
+      const px = parseFloat(getComputedStyle(probe).top) || 0;
+      probe.remove();
+      return px;
+    }
+
+    // ===== Tail calculator so last card can fully "stick" =====
+    function adjustStackTail(bufferPx = 16){
+      if (window.matchMedia('(max-width: 768px)').matches) {
+        stack.style.setProperty('--stack-tail', '0px');
+        return;
+      }
+      const portfolioSection = document.getElementById('portfolio');
+      if(!portfolioSection) return;
+
+      const stickyTopPx = resolveVarPx('--sticky-top', stack);
+      stack.style.setProperty('--stack-tail', '0px');
+      void stack.offsetHeight;
+
+      const gap = portfolioSection.getBoundingClientRect().top - stack.getBoundingClientRect().bottom;
+      const neededTail = Math.max(0, Math.ceil(stickyTopPx + bufferPx - gap));
+      stack.style.setProperty('--stack-tail', neededTail + 'px');
+    }
+
+    // ===== Scroll lock preserving position (iOS-safe) =====
+    let scrollYCache = 0;
+    function lockScroll(){
+      scrollYCache = window.scrollY || document.documentElement.scrollTop || 0;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollYCache}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+    }
+    function unlockScroll(){
+      const y = Math.abs(parseInt(document.body.style.top || '0', 10)) || 0;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+      window.scrollTo(0, y);
+    }
+
+    // ===== Focus trap =====
+    let releaseTrap = null;
+    function trapFocus(container){
+      const SELECTOR = 'a,button,input,select,textarea,[tabindex]:not([tabindex="-1"])';
+      function getEls(){
+        return Array.from(container.querySelectorAll(SELECTOR))
+          .filter(el => !el.disabled && el.tabIndex !== -1 && el.offsetParent !== null);
+      }
+      function onKey(e){
+        if(e.key !== 'Tab') return;
+        const els = getEls(); if(!els.length) return;
+        const first = els[0], last = els[els.length - 1];
+        if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+        else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+      }
+      container.addEventListener('keydown', onKey);
+      return ()=>container.removeEventListener('keydown', onKey);
+    }
+
+    // ===== Modal open/close (small & unscrollable) =====
+    let lastFocused = null;
+
+    function openModalFromData(item, triggerEl=null){
+      modalTitleEl.textContent = item.title;
+      modalTagsEl.innerHTML = item.tags.map(t=>`<span class="modal-tag">${t}</span>`).join('');
+      modalBody.innerHTML = `<p>${item.content.replace(/\n/g,'<br>')}</p>`;
+      openModal(triggerEl);
+    }
+
+    function openModal(triggerEl=null){
+      lastFocused = triggerEl || document.activeElement;
+
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden','false');
+
+      lockScroll();
+
+      requestAnimationFrame(() => {
+        try { closeModalBtn.focus({ preventScroll: true }); }
+        catch { closeModalBtn.focus(); }
+
+        if (releaseTrap) releaseTrap();
+        releaseTrap = trapFocus(modal);
+      });
+    }
+
+    function closeModal(){
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden','true');
+
+      if (releaseTrap){ releaseTrap(); releaseTrap = null; }
+
+      unlockScroll();
+
+      try { lastFocused?.focus({ preventScroll: true }); }
+      catch { lastFocused?.focus(); }
+    }
+
+    modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e) => { if(e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
+    closeModalBtn.addEventListener('click', closeModal);
+
+    // ===== Interactions =====
+    function wireInteractions(){
+      // Hero CTAs
+      $('#cta-explore').addEventListener('click', () => {
+        document.getElementById('case-studies').scrollIntoView({ behavior:'smooth', block:'start' });
+      });
+      $('#cta-portfolio').addEventListener('click', () => {
+        document.getElementById('portfolio').scrollIntoView({ behavior:'smooth', block:'start' });
+      });
+
+      // Case studies: modal + next
+      stack.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if(!btn) return;
+        if(btn.dataset.view){
+          const item = caseStudies.find(x => x.id === btn.dataset.view);
+          if(!item) return;
+          openModalFromData(item, btn);
+        } else if(btn.hasAttribute('data-next')){
+          const card = e.target.closest('.stack-card');
+          const all = $$('.stack-card', stack);
+          const idx = all.indexOf(card);
+          const next = all[idx + 1];
+          if(next){
+            const top = next.getBoundingClientRect().top + window.scrollY - (window.innerHeight * 0.12);
+            window.scrollTo({ top, behavior:'smooth' });
+          } else {
+            document.getElementById('portfolio').scrollIntoView({ behavior:'smooth', block:'start' });
+          }
+        }
+      });
+
+      // Portfolio demo
+      $('#portfolioGrid').addEventListener('click', (e) => {
+        const btn = e.target.closest('button'); if(!btn) return;
+        const card = e.target.closest('.card');
+        const title = card?.querySelector('h3')?.textContent?.trim() ?? 'Project';
+        if(btn.dataset.action === 'view'){
+          openModalFromData({
+            title,
+            tags: ['Preview','Demo'],
+            content: 'Interactive preview placeholder. Swap with your live embed or gallery.'
+          }, btn);
+        } else {
+          alert(`${title}: Details are kept on-page in this demo.`);
+        }
+      });
+    }
+
+    // Entrance polish for larger screens only
+    function observeEntrances(){
+      if (window.matchMedia('(max-width: 768px)').matches) return;
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting) entry.target.classList.add('in');
+          else entry.target.classList.remove('in');
+        });
+      }, { threshold: 0.25 });
+      $$('.stack-card', stack).forEach(el => io.observe(el));
+    }
+
+    // Debounce recalculation on resize using rAF
+    let tailRAF = null;
+    window.addEventListener('resize', () => {
+      if (tailRAF) cancelAnimationFrame(tailRAF);
+      tailRAF = requestAnimationFrame(() => adjustStackTail());
+    });
+
+    // ===== Init =====
+    function init(){
+      document.getElementById('yr').textContent = new Date().getFullYear();
+      renderStack();
+      renderPortfolio();
+      wireInteractions();
+      observeEntrances();
+      adjustStackTail(); // compute minimal tail after render
+    }
+    window.addEventListener('DOMContentLoaded', init);
+    window.addEventListener('load', adjustStackTail); // recalc after fonts/images settle
+  </script>
+</body>
+</html>
